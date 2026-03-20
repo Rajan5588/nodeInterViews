@@ -17,7 +17,7 @@ const {email,username,password}=req.body;
 
     const hashPass=await  bcrypt.hash(password,10);
 
-     const newuser=userModel.create({
+     const newuser=await  userModel.create({
           email,
           username,
           password:hashPass
@@ -36,7 +36,7 @@ const {email,username,password}=req.body;
 
 res.cookie("refressToken",refressToken)
 
-return res.status(201).json({message:"user Created successFully"})
+return res.status(201).json({message:"user Created successFully",generateAccessToken})
         
 
 
@@ -87,8 +87,8 @@ return res.status(401).json({message:"error"})
        if(!decoded){
           return res.json({message:"invalide refress token "})
        }
-    
-       const newAccessToken=jwt.sign({id:decoded},"secure",{expiresIn:"1m"})
+    const user= await userModel.findOne({decoded.id})
+       const newAccessToken=jwt.sign({id:user._id},"secure",{expiresIn:"1m"})
 
    return res.json({accessToken:newAccessToken});
       }catch(err){
