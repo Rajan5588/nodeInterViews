@@ -24,7 +24,7 @@ const {email,username,password}=req.body;
      })
 
      
-     const generateAccessToken=jwt.sign(newuser._id,"secure",{
+     const generateAccessToken=jwt.sign({id:newuser._id},"secure",{
           expiresIn:"1m"
      })
 
@@ -57,7 +57,7 @@ return res.status(201).json({message:"user Created successFully"})
           return res.json({message:"user does not exist"})
        }
        
-       bcrypt.compare(password, user.password,(error,result)=>{
+      await bcrypt.compare(password, user.password,(error,result)=>{
           if(error){
                console.log("error",error)
                return
@@ -65,10 +65,10 @@ return res.status(201).json({message:"user Created successFully"})
 
        });
 
-       const accessToken=jwt.sign(user._id,"secure",{
+       const accessToken=jwt.sign({id:user._id},"secure",{
           expiresIn:"1m"
        })
-       const refresToken=jwt.sign(user._id,"refres",{expiresIn:"7d"})
+       const refresToken=jwt.sign({id:user._id},"refres",{expiresIn:"7d"})
            res.cookie("refresToken", refresToken);
        return res.status(200).json({message:"user login successfully ",accessToken,refresToken});
 
@@ -92,7 +92,7 @@ return res.status(401).json({message:"error"})
           return res.json({message:"invalide refress token "})
        }
     
-       const newAccessToken=jwt.sign(decoded,"secure",{expiresIn:"1m"})
+       const newAccessToken=jwt.sign({id:decoded},"secure",{expiresIn:"1m"})
 
    return res.json({accessToken:newAccessToken});
       }catch(err){
