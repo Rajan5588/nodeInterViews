@@ -57,14 +57,10 @@ return res.status(201).json({message:"user Created successFully"})
           return res.json({message:"user does not exist"})
        }
        
-      await bcrypt.compare(password, user.password,(error,result)=>{
-          if(error){
-               console.log("error",error)
-               return
-          }
-
-       });
-
+ const ismatch= await bcrypt.compare(password, user.password);
+       if(!ismatch){
+          return res.json({message:" wrong password"})
+       }
        const accessToken=jwt.sign({id:user._id},"secure",{
           expiresIn:"1m"
        })
