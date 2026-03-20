@@ -76,7 +76,7 @@ return res.status(201).json({message:"user Created successFully",generateAccessT
 return res.status(401).json({message:"error"})
       }
 }
- const resfressToken=(req,res)=>{
+ const resfressToken=async(req,res)=>{
       try{
           const {refresToken}=req.cookie;
       if(!refresToken){
@@ -87,7 +87,7 @@ return res.status(401).json({message:"error"})
        if(!decoded){
           return res.json({message:"invalide refress token "})
        }
-    const user= await userModel.findOne({decoded.id})
+    const user= await userModel.findById(decoded.id)
        const newAccessToken=jwt.sign({id:user._id},"secure",{expiresIn:"1m"})
 
    return res.json({accessToken:newAccessToken});
